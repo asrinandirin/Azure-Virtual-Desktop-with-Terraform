@@ -14,7 +14,7 @@ By the end of this article, you will be able to create custom-configured Azure V
 
 ---
 
-### Let's start by examining our [main.tf](http://main.tf/) file first.
+### But let's start by examining our [main.tf](http://main.tf/) file first.
 
 So this code below sets up all the necessary providers for your Terraform config. Specifically, we're talking about the **`azurerm`** and **`azuread`** providers. Plus, we've gone ahead and configured that **`azurerm`** provider without any extra features.
 
@@ -208,6 +208,144 @@ SETTINGS
 }
 ```
 
-We have completed the main part of our structure. We now need to define the necessary variables to make it functional.
+### **We have completed the main part of our structure. We now need to define the necessary variables to make main.tf functional.**
 
 ---
+
+**Be careful which resources in which resource groups for your configuration. It can be a problem when you try “terraform plan” command.** 
+
+Let’s start with general variables
+
+```yaml
+variable "resource_group" {
+  description = "The name of the resource group in which to create the Azure Virtual Desktop"
+  default = "" // Example resource group like "my-rg"
+}
+
+variable "location" {
+  description = "The location/region where the session hosts are created"
+  default = "" //westeurope, eastus
+}
+```
+
+Network Variables 
+
+```yaml
+variable "virtual_network_name" {
+  description = "Virtual network name that subnet live."
+  default = ""
+}
+
+variable "virtual_network_subnet" {
+  description = "Subnet name VM's will be deployed."
+  default = ""
+}
+
+variable "virtual_network_subnet_rg" {
+  description = "The resource group where the subnet live."
+  default = ""
+}
+
+variable "network_security_group" {
+  description = "Network Security Group name that NIC will be bounded."
+  default = ""
+}
+
+```
+
+Virtual Desktop Machine Variables
+
+```yaml
+variable "vm_size" {
+  description = "Specifies the size of the virtual machine."
+  default = "" // -> "Standard_D4hs_v3 or etc"
+}
+
+variable "custom_image_location" {
+  description = "The location in which the private custom images live"
+  type = string
+  default = "" 
+}
+
+variable "custom_image_resource_group_name" {
+  description = "The name of the Resource Group in which the Custom Image exists."
+  type = string
+  default = ""
+}
+
+variable "custom_image_name" {
+  description = "The name of the Custom Image to provision this Virtual Machine from."
+  type = string
+  default = ""
+}
+
+variable "admin_username" {
+  description = "Local Admin Username"
+  default = ""
+}
+
+variable "admin_password" {
+  description = "Admin Password"
+  default = ""
+}
+
+// To figure out what names will be given to your instances, check out resource config. "${var.vm_name}${count.index + 1}" 
+// For this example, if you give count 3 you will have 3 VM instances that named like (vm-host**-1**, vm-host**-2**, vm-host**-3**)
+variable "vm_name" {
+  description = "Virtual Machine Name (prefix)"
+  default = "vm-host-"
+}
+
+variable "vm_count" {
+  description = "Number of Session Host VMs to create" 
+  default = "1"
+}
+
+```
+
+ 
+
+Domain and registration variables are below
+
+```yaml
+variable "domain" {
+  description = "Domain to join" 
+  default = "" 
+}
+
+// Give user credentials that have permissions on your domain environment.
+variable "domainuser" {
+  description = "Domain Join User Name" 
+  default = "asrin.andirin@d-teknoloji.com.tr"
+}
+
+variable "oupath" {
+  description = "OU Path"
+  default = ""
+}
+
+variable "domainpassword" {
+  description = "Domain User Password" 
+  default = ""
+}
+
+variable "regtoken" {
+  description = "Host Pool Registration Token" 
+	default = "Your token here"
+}
+  
+
+variable "hostpoolname" {
+  description = "Host Pool Name to Register Session Hosts" 
+  default = ""
+  }
+
+// Dont need to change below. 
+variable "artifactslocation" {
+  description = "Location of WVD Artifacts (Don't Change)" 
+  default = "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip"
+}
+```
+
+To summarize, once all variables are filled, you must initialize, plan, and apply your Terraform configurations. 
+and you will have 5 resources per count.
