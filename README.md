@@ -10,8 +10,6 @@ By the end of this article, you will be able to create custom-configured Azure V
 
 **I assume you already know Terraform and have it installed in your environment.**
 
-**At the end, I am going to be sharing with you all the source codes.**
-
 ---
 
 ### Module Usage
@@ -44,8 +42,9 @@ module "vdi-module" {
 
     }
 ```
+# Module Explanations
 
-### But let's start by examining our [main.tf](http://main.tf/) file first.
+### Let's start by examining our [main.tf](http://main.tf/) file first.
 
 So this code below sets up all the necessary providers for your Terraform config. Specifically, we're talking about the **`azurerm`** and **`azuread`** providers. Plus, we've gone ahead and configured that **`azurerm`** provider without any extra features.
 
