@@ -14,6 +14,37 @@ By the end of this article, you will be able to create custom-configured Azure V
 
 ---
 
+### Module Usage
+
+```json
+module "vdi-module" {
+
+      source= "github.com/asrinandirin/Azure-Virtual-Desktop-with-Terraform"
+      
+      resource_group             = ""         // Resource group in which to create the Azure resources.
+      location                   = ""         // The location/region where the session hosts are created.
+      virtual_network_name       = ""         // Virtual Network Name that subnet live.
+      virtual_network_subnet     = ""         // Subnet name VM's will be deployed.
+      virtual_network_subnet_rg  = ""         // The resource group where the subnet live.
+      network_security_group     = ""         // Network Security Group name that NIC will be bounded.
+      vm_size                    = ""         // Specifies the size of the virtual machine.   
+      custom_image_location      = ""         // Custom image location
+      custom_image_resource_group_name = ""   // Resource Group in which the Custom Image exists     
+      custom_image_name          = ""         // Custom image name
+      admin_username             = ""         // Local Admin Username
+      admin_password             = ""         // Admin Password
+      vm_name                    = ""         // Virtual Machine Name (prefix)
+      vm_count                   = ""         // Number of Session Host VMs to create
+      domain                     = ""         // Domain to join
+      domainuser                 = ""         // Domain Join User Name
+      domainpassword             = ""         // Domain user password
+      oupath                     = ""         // OU Path
+      regtoken                   = ""         // Host Pool Registration Token
+      hostpoolname               = ""         // Host Pool Name to Register Session Hosts
+
+    }
+```
+
 ### But let's start by examining our [main.tf](http://main.tf/) file first.
 
 So this code below sets up all the necessary providers for your Terraform config. Specifically, we're talking about the **`azurerm`** and **`azuread`** providers. Plus, we've gone ahead and configured that **`azurerm`** provider without any extra features.
@@ -348,4 +379,7 @@ variable "artifactslocation" {
 ```
 
 To summarize, once all variables are filled, you must initialize, plan, and apply your Terraform configurations. 
+
+At the end you will have an output like,
+
 and you will have 5 resources per count.
