@@ -16,7 +16,7 @@ By the end of this article, you will be able to create custom-configured Azure V
 
 ### Module Usage
 
-```json
+```yaml
 module "vdi-module" {
 
       source= "github.com/asrinandirin/Azure-Virtual-Desktop-with-Terraform"
