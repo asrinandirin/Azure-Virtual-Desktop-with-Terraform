@@ -14,11 +14,6 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_integer" "random_int" {
-  min = 1
-  max = 50000
-}
-
 data "azurerm_subnet" "subnet" {
   name                 = "${var.virtual_network_subnet}"
   virtual_network_name = "${var.virtual_network_name}"
@@ -36,7 +31,7 @@ data "azurerm_network_security_group" "security_group" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "${var.vm_name}${count.index}${random_integer.random_int.result}"
+  name                = "${var.vm_name}${count.index + 1}"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group}"
   count               = "${var.vm_count}"
@@ -51,11 +46,11 @@ resource "azurerm_network_interface" "nic" {
 resource "azurerm_network_interface_security_group_association" "security_group_association" {
   network_interface_id      = azurerm_network_interface.nic[count.index].id
   network_security_group_id = "${data.azurerm_network_security_group.security_group.id}"
-  count = "${var.vm_count}"
+  count                     = "${var.vm_count}"
 }
 
 resource "azurerm_virtual_machine" "vm" {
-  name                  = "${var.vm_name}${count.index}${random_integer.random_int.result}"
+  name                  = "${var.vm_name}${count.index + 1}"
   location              = "${var.location}"
   resource_group_name   = "${var.resource_group}"
   vm_size               = "${var.vm_size}"
@@ -70,13 +65,13 @@ resource "azurerm_virtual_machine" "vm" {
 
 
   storage_os_disk {
-    name          = "${var.vm_name}${count.index}${random_integer.random_int.result}"
+    name          = "${var.vm_name}${count.index + 1}"
     create_option = "FromImage"
   }
 
 
   os_profile {
-    computer_name  = "${var.vm_name}${count.index}${random_integer.random_int.result}"
+    computer_name  = "${var.vm_name}${count.index + 1}"
     admin_username = "${var.admin_username}"
     admin_password = "${var.admin_password}"
   }
