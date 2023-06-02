@@ -47,6 +47,7 @@ resource "azurerm_network_interface_security_group_association" "security_group_
   network_interface_id      = azurerm_network_interface.nic[count.index].id
   network_security_group_id = "${data.azurerm_network_security_group.security_group.id}"
   count                     = "${var.vm_count}"
+
 }
 
 resource "azurerm_virtual_machine" "vm" {
